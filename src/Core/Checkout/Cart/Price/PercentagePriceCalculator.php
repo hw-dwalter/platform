@@ -43,10 +43,10 @@ class PercentagePriceCalculator
 
         $taxes = new CalculatedTaxCollection();
         foreach ($prices->getCalculatedTaxes() as $calculatedTax) {
-            $tax = $this->rounding->round(
-                $calculatedTax->getTax() / 100 * $percentage,
-                $context->getContext()->getCurrencyPrecision()
-            );
+            // get not rounded tax with fractions!
+            $totalTax = $calculatedTax->getPrice() / (100 + $calculatedTax->getTaxRate()) * $calculatedTax->getTaxRate();
+            $tax = $totalTax / 100 * $percentage;
+            $tax = $this->rounding->round( $tax, $context->getContext()->getCurrencyPrecision()  );
 
             $price = $this->rounding->round(
                 $calculatedTax->getPrice() / 100 * $percentage,
